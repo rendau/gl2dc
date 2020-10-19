@@ -70,6 +70,8 @@ func (c *St) discordSend(msg DiscordMsgSt) error {
 		return err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	resp, err := discordHttpClient.Do(req)
 	if err != nil {
 		return err
