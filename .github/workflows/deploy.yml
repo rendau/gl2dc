@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OWNER: rendau
-      REPO: gl2sl
-      IMAGE: gl2sl
+      REPO: gl2dc
+      IMAGE: gl2dc
       DOCKERHUB_USER: rendau
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.13
+          go-version: 1.15
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
