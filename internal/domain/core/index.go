@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -55,6 +56,8 @@ func (c *St) HandleMessage(msgBytes []byte) error {
 			return err
 		}
 	}
+
+	log.Println(string(msgBytes))
 
 	return nil
 }
