@@ -38,10 +38,10 @@ func (c *St) HandleMessage(msgBytes []byte) error {
 		blMsg := map[string]interface{}{}
 		if err = json.Unmarshal([]byte(bl.Message), &blMsg); err == nil {
 			for k, v := range blMsg {
-				rows = append(rows, fmt.Sprintf("**%s**: %v", k, v))
+				rows = append(rows, fmt.Sprintf("```%s: %v```", k, v))
 			}
 		} else {
-			rows = append(rows, fmt.Sprintf("**message**: %s", bl.Message))
+			rows = append(rows, fmt.Sprintf("```message**: %s```", bl.Message))
 		}
 
 		if c.glLink != "" {
@@ -49,7 +49,7 @@ func (c *St) HandleMessage(msgBytes []byte) error {
 		}
 		err = c.discordSend(DiscordMsgSt{
 			Username: bl.Fields.ContainerName,
-			Content:  strings.Join(rows, "\n"),
+			Content:  strings.Join(rows, ""),
 		})
 		if err != nil {
 			return err
