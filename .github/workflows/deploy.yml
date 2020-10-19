@@ -25,12 +25,12 @@ jobs:
         env:
           DOCKERHUB_PSW: ${{ secrets.DOCKERHUB_PSW }}
         run: |
-          docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PSW"
+          docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PSW
 
       - name: Docker build
         run: |
-          docker build -t "$DOCKERHUB_USER/$IMAGE:latest" .
+          docker build -t $DOCKERHUB_USER/$IMAGE:latest .
 
       - name: Docker push
         run: |
-          docker push "$DOCKERHUB_USER/$IMAGE:latest"
+          docker push $DOCKERHUB_USER/$IMAGE:latest
