@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -79,6 +81,15 @@ func (c *St) discordSend(msg DiscordMsgSt) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		var bodyText string
+
+		respBodyRaw, err := ioutil.ReadAll(resp.Body)
+		if err == nil {
+			bodyText = string(respBodyRaw)
+		}
+
+		log.Println("bad status code from discord", resp.StatusCode, "body:", bodyText)
+
 		return errors.New("bad status code from discord")
 	}
 
