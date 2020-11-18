@@ -40,7 +40,15 @@ func (c *St) HandleMessage(msgBytes []byte) {
 		blMsg := map[string]interface{}{}
 		if err = json.Unmarshal([]byte(bl.Message), &blMsg); err == nil {
 			for k, v := range blMsg {
-				rows = append(rows, fmt.Sprintf("```%s: %v```", k, v))
+				switch vv := v.(type) {
+				case string:
+					if len(vv) > 1400 {
+						vv = vv[:1400] + "..."
+					}
+					rows = append(rows, fmt.Sprintf("```%s: %s```", k, vv))
+				default:
+					rows = append(rows, fmt.Sprintf("```%s: %v```", k, vv))
+				}
 			}
 		} else {
 			rows = append(rows, fmt.Sprintf("```message**: %s```", bl.Message))
