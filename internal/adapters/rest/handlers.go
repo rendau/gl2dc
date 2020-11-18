@@ -13,10 +13,7 @@ func (a *St) hMsg(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err = a.cr.HandleMessage(bodyBytes)
-	if err != nil {
-		log.Fatal(err)
-	}
+	a.cr.HandleMessage(bodyBytes)
 
 	w.WriteHeader(200)
 }

@@ -3,7 +3,6 @@ package core
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -28,11 +27,12 @@ func NewSt(slackWebhookUrl, glLink string) *St {
 	}
 }
 
-func (c *St) HandleMessage(msgBytes []byte) error {
+func (c *St) HandleMessage(msgBytes []byte) {
 	msg := MsgSt{}
 	err := json.Unmarshal(msgBytes, &msg)
 	if err != nil {
-		return err
+		log.Println("Fail to parse json", err)
+		return
 	}
 
 	for _, bl := range msg.Backlog {
@@ -49,34 +49,32 @@ func (c *St) HandleMessage(msgBytes []byte) error {
 		if c.glLink != "" {
 			rows = append(rows, "<"+c.glLink+">")
 		}
-		err = c.discordSend(DiscordMsgSt{
+		c.discordSend(DiscordMsgSt{
 			Username: bl.Fields.ContainerName,
 			Content:  strings.Join(rows, ""),
 		})
-		if err != nil {
-			return err
-		}
 	}
-
-	return nil
 }
 
-func (c *St) discordSend(msg DiscordMsgSt) error {
+func (c *St) discordSend(msg DiscordMsgSt) {
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
-		return err
+		log.Println("Fail to marshal json", err)
+		return
 	}
 
 	req, err := http.NewRequest("POST", c.discordWebhookUrl, bytes.NewBuffer(msgBytes))
 	if err != nil {
-		return err
+		log.Println("Fail to create request", err)
+		return
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := discordHttpClient.Do(req)
 	if err != nil {
-		return err
+		log.Println("Fail to send request", err)
+		return
 	}
 	defer resp.Body.Close()
 
@@ -89,9 +87,5 @@ func (c *St) discordSend(msg DiscordMsgSt) error {
 		}
 
 		log.Println("bad status code from discord", resp.StatusCode, "body:", bodyText)
-
-		return errors.New("bad status code from discord")
 	}
-
-	return nil
 }
